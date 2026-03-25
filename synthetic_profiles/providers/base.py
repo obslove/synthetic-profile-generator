@@ -7,7 +7,7 @@ from synthetic_profiles.utils.randomizer import GenerationContext
 
 
 class EmailProvider(ABC):
-    """Email provider interface."""
+    """Interface de provedor de e-mail."""
 
     @abstractmethod
     async def generate_addresses(

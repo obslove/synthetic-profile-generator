@@ -8,7 +8,7 @@ from synthetic_profiles.utils.randomizer import GenerationContext
 
 
 class EmailGenerationService:
-    """Orchestrate primary email alias generation with explicit diagnostics and safe fallback."""
+    """Orquestra a geração principal de aliases de e-mail com diagnóstico claro e fallback seguro."""
 
     def __init__(
         self,
@@ -35,7 +35,7 @@ class EmailGenerationService:
                 count=count,
                 context=fallback_context,
             )
-            metadata.provider_reason = "SimpleLogin provider disabled by request."
+            metadata.provider_reason = "Provedor SimpleLogin desativado pela requisição."
             metadata.provider_reason_code = "provider_disabled"
             return emails, metadata
         if self._simplelogin_provider is None:
@@ -46,9 +46,9 @@ class EmailGenerationService:
             )
             metadata.fallback_occurred = True
             metadata.degraded_mode = True
-            metadata.warning_message = "SimpleLogin requested but API key is missing. Reserved-domain fallback used."
+            metadata.warning_message = "SimpleLogin solicitado, mas a chave de API está ausente. Fallback com domínio reservado utilizado."
             metadata.simplelogin_requested = True
-            metadata.provider_reason = "SimpleLogin API key missing."
+            metadata.provider_reason = "Chave de API do SimpleLogin ausente."
             metadata.provider_reason_code = "missing_api_key"
             return emails, metadata
         try:
@@ -66,7 +66,7 @@ class EmailGenerationService:
             metadata.fallback_occurred = True
             metadata.degraded_mode = True
             metadata.simplelogin_requested = True
-            metadata.warning_message = f"SimpleLogin unavailable: {exc}. Reserved-domain fallback used."
+            metadata.warning_message = f"SimpleLogin indisponível: {exc}. Fallback com domínio reservado utilizado."
             metadata.provider_reason = str(exc)
             metadata.provider_reason_code = exc.reason_code
             return emails, metadata

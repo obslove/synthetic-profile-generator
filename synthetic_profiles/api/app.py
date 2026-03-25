@@ -14,7 +14,7 @@ from synthetic_profiles.services.output_formatter import OutputFormatter
 
 configure_logging()
 settings = Settings()
-app = FastAPI(title="Synthetic Profile Generator", version="0.1.0")
+app = FastAPI(title="Gerador de Perfis Sintéticos", version="0.1.0")
 generator = build_profile_generator(settings)
 registry = CountryRegistry()
 formatter = OutputFormatter()

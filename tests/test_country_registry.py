@@ -9,7 +9,7 @@ def test_country_registry_returns_bundled_pack() -> None:
 
     assert pack.country_code == "BR"
     assert metadata.fallback_used is False
-    assert metadata.country_name == "Brazil"
+    assert metadata.country_name == "Brasil"
 
 
 def test_country_registry_lists_only_supported_countries() -> None:

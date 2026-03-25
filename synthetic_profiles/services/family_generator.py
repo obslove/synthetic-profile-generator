@@ -8,7 +8,7 @@ from synthetic_profiles.utils.randomizer import GenerationContext
 
 
 class FamilyGenerator:
-    """Generate a minimal family structure with only synthetic parents."""
+    """Gera uma estrutura familiar mínima com apenas pais sintéticos."""
 
     def __init__(self, name_generator: NameGenerator) -> None:
         self._name_generator = name_generator
@@ -104,4 +104,4 @@ class FamilyGenerator:
         for surname in pack.surnames:
             if surname != avoid:
                 return surname
-        return avoid or "Synthetic"
+        return avoid or "Sintético"

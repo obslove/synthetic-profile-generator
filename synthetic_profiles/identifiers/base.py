@@ -7,7 +7,7 @@ from synthetic_profiles.models.schemas import SyntheticIdentifier
 
 
 class IdentifierGenerator(ABC):
-    """Interface for test-only identifier generators."""
+    """Interface para geradores de identificadores apenas para teste."""
 
     country_code: str
     identifier_type: str

@@ -5,7 +5,7 @@ from synthetic_profiles.models.schemas import Location
 
 
 class LocationGenerator:
-    """Return only the country-level location requested by the simplified generator."""
+    """Retorna apenas a localização em nível de país do gerador simplificado."""
 
     def generate(self, *, pack: CountryPack) -> Location:
         return Location(country=pack.country_name, country_code=pack.country_code)

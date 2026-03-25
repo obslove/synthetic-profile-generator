@@ -60,12 +60,12 @@ def test_cli_generate_defaults_to_pretty_output() -> None:
     )
 
     assert result.exit_code == 0
-    assert "Identity" in result.stdout
-    assert "Email:" in result.stdout
-    assert "Password:" in result.stdout
-    assert "United States (US)" in result.stdout
+    assert "Identidade" in result.stdout
+    assert "E-mail:" in result.stdout
+    assert "Senha:" in result.stdout
+    assert "Estados Unidos (US)" in result.stdout
     assert "SSN-like:" in result.stdout
-    assert "Email Provider: fallback (missing_api_key)" in result.stdout
+    assert "Provedor de e-mail: fallback (missing_api_key)" in result.stdout
 
 
 def test_cli_generate_batch_outputs_pretty() -> None:
@@ -84,7 +84,7 @@ def test_cli_generate_batch_outputs_pretty() -> None:
 
     assert result.exit_code == 0
     lines = [line for line in result.stdout.splitlines() if line.strip()]
-    assert len([line for line in lines if "Profile " in line]) == 2
+    assert len([line for line in lines if "Perfil " in line]) == 2
 
 
 def test_pretty_and_compact_modes_surface_credentials() -> None:
@@ -100,14 +100,14 @@ def test_pretty_and_compact_modes_surface_credentials() -> None:
     )
 
     assert pretty.exit_code == 0
-    assert "Credentials" in pretty.stdout
-    assert "Email:" in pretty.stdout
-    assert "Password:" in pretty.stdout
-    assert "Email Provider: fallback (missing_api_key)" in pretty.stdout
+    assert "Credenciais" in pretty.stdout
+    assert "E-mail:" in pretty.stdout
+    assert "Senha:" in pretty.stdout
+    assert "Provedor de e-mail: fallback (missing_api_key)" in pretty.stdout
     assert compact.exit_code == 0
-    assert "Email:" in compact.stdout
-    assert "Password:" in compact.stdout
-    assert "Email Provider: fallback (missing_api_key)" in compact.stdout
+    assert "E-mail:" in compact.stdout
+    assert "Senha:" in compact.stdout
+    assert "Provedor de e-mail: fallback (missing_api_key)" in compact.stdout
 
 
 def test_cli_rejects_json_and_csv_formats() -> None:
@@ -117,6 +117,6 @@ def test_cli_rejects_json_and_csv_formats() -> None:
     csv_result = runner.invoke(cli_app, ["generate", "--f", "csv"])
 
     assert json_result.exit_code != 0
-    assert "format must be one of" in json_result.output
+    assert "o formato deve ser um destes" in json_result.output
     assert csv_result.exit_code != 0
-    assert "format must be one of" in csv_result.output
+    assert "o formato deve ser um destes" in csv_result.output

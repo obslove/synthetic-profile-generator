@@ -122,15 +122,15 @@ class GenerationRequest(BaseModel):
     def normalize_country_code(cls, value: str) -> str:
         cleaned = value.strip().upper()
         if len(cleaned) != 2 or not cleaned.isalpha():
-            raise ValueError("country_code must be an ISO 3166-1 alpha-2 code")
+            raise ValueError("country_code deve ser um código ISO 3166-1 alpha-2")
         return cleaned
 
     @model_validator(mode="after")
     def validate_ranges(self) -> "GenerationRequest":
         if self.age_min > self.age_max:
-            raise ValueError("age_min must be <= age_max")
+            raise ValueError("age_min deve ser <= age_max")
         if self.password_length < 12:
-            raise ValueError("password_length must be >= 12")
+            raise ValueError("password_length deve ser >= 12")
         return self
 
 
@@ -141,7 +141,7 @@ class BatchGenerationRequest(GenerationRequest):
     @classmethod
     def validate_count(cls, value: int) -> int:
         if value < 1:
-            raise ValueError("count must be >= 1")
+            raise ValueError("count deve ser >= 1")
         return value
 
 

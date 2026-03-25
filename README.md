@@ -1,34 +1,34 @@
-# Synthetic Profile Generator
+# Gerador de Perfis Sintéticos
 
-Synthetic-first profile generator for development, QA, demos, staging, and seed data.
+Gerador de perfis sintéticos com foco em segurança para desenvolvimento, QA, demonstrações, staging e seed de dados.
 
-This simplified version intentionally generates only:
+Esta versão simplificada gera intencionalmente apenas:
 
 - `identity`
-- `location` with country only
-- `family` with only `father` and `mother`
-- `credentials` with one email and one password
-- optional synthetic national identifier for `BR`, `US`, and `FR`
+- `location` apenas com país
+- `family` apenas com `father` e `mother`
+- `credentials` com um e-mail e uma senha
+- identificador nacional sintético opcional para `BR`, `US` e `FR`
 
-Bundled locale packs keep very large first-name and surname pools so repeated runs stay much less repetitive. Each supported country currently ships with `900` male names, `900` female names, and `900` surnames.
+Os pacotes de locale incluídos mantêm pools amplas de prenomes e sobrenomes para reduzir repetição prática. Cada país suportado atualmente possui `900` nomes masculinos, `900` nomes femininos e `900` sobrenomes.
 
-Supported countries are intentionally limited to:
+Países suportados:
 
 - `BR`
 - `US`
 - `FR`
 
-Safety rules:
+Regras de segurança:
 
-- no real identities
-- no exact residential addresses
-- no live deceptive inboxes
-- no real-world identifiers beyond synthetic test-only formatting
-- no fraud, impersonation, KYC, or verification-bypass use
+- não gerar identidades reais
+- não gerar endereços residenciais exatos
+- não gerar caixas de entrada enganosas ativas
+- não gerar identificadores de uso real além de formatos sintéticos para teste
+- não apoiar fraude, impersonação, KYC ou bypass de verificação
 
-## Output Shape
+## Estrutura da Saída
 
-Default JSON output is minimal:
+A saída JSON padrão é mínima:
 
 ```json
 {
@@ -36,11 +36,11 @@ Default JSON output is minimal:
     "full_name": "Paulo Murilo Almeida Rangel",
     "gender": "male",
     "age": 53,
-    "national_identifier": "031.105.283-55",
+    "national_identifier": "265.683.975-04",
     "national_identifier_type": "cpf"
   },
   "location": {
-    "country": "Brazil",
+    "country": "Brasil",
     "country_code": "BR"
   },
   "family": {
@@ -48,14 +48,14 @@ Default JSON output is minimal:
       "full_name": "Lucas Rangel",
       "gender": "male",
       "age": 80,
-      "national_identifier": "495.231.846-01",
+      "national_identifier": "761.012.547-47",
       "national_identifier_type": "cpf"
     },
     "mother": {
       "full_name": "Dandara Almeida",
       "gender": "female",
       "age": 83,
-      "national_identifier": "852.066.438-58",
+      "national_identifier": "120.975.367-78",
       "national_identifier_type": "cpf"
     }
   },
@@ -66,48 +66,48 @@ Default JSON output is minimal:
 }
 ```
 
-Debug mode adds only technical diagnostics:
+O modo de depuração adiciona apenas diagnósticos técnicos:
 
-- email provider details
-- fallback reason
-- RNG/seed diagnostics
-- warnings
+- detalhes do provedor de e-mail
+- motivo do fallback
+- diagnósticos de RNG/seed
+- avisos
 
-## Determinism
+## Determinismo
 
-- Without `seed`: generation varies across runs
-- With `seed`: same input produces the same output
-- Batch generation remains deterministic per batch index when seed is provided
+- sem `seed`: a geração varia entre execuções
+- com `seed`: a mesma entrada produz a mesma saída
+- geração em lote permanece determinística por índice do lote quando há `seed`
 
-## Synthetic National Identifiers
+## Identificadores Nacionais Sintéticos
 
-The API field `include_cpf` keeps its old name for compatibility, but now means:
+O campo `include_cpf` da API mantém o nome antigo por compatibilidade, mas agora significa:
 
-- `BR` -> synthetic `cpf`
-- `US` -> synthetic `ssn_like`
-- `FR` -> synthetic `nir_like`
+- `BR` -> `cpf` sintético
+- `US` -> `ssn_like` sintético
+- `FR` -> `nir_like` sintético
 
-Rules:
+Regras:
 
-- optional
-- synthetic only
-- deterministic with seed
-- checksum-valid for Brazilian CPF testing
-- `US` and `FR` outputs are locale-shaped placeholders for UI/backend tests only
-- always marked `safe_for_testing_only`
+- opcional
+- apenas sintético
+- determinístico com `seed`
+- checksum válido para testes de CPF brasileiro
+- em `US` e `FR`, a saída é apenas um placeholder no formato local para testes de UI e backend
+- sempre marcado internamente como `safe_for_testing_only`
 
-Use it only for tests.
+Use isso apenas para testes.
 
-## Run
+## Execução
 
-### Local setup
+### Setup local
 
 ```bash
 cd /home/ven/synthetic-profile-generator
 source .venv/bin/activate
 ```
 
-Fish shell:
+No Fish:
 
 ```fish
 cd /home/ven/synthetic-profile-generator
@@ -116,7 +116,7 @@ source .venv/bin/activate.fish
 
 ### CLI
 
-Generate one profile:
+Gerar um perfil:
 
 ```bash
 python main.py generate \
@@ -125,7 +125,7 @@ python main.py generate \
   --f pretty
 ```
 
-Generate using the default pretty mode:
+Gerar usando o modo padrão `pretty`:
 
 ```bash
 python main.py generate \
@@ -133,7 +133,7 @@ python main.py generate \
   --g female
 ```
 
-Generate a batch:
+Gerar um lote:
 
 ```bash
 python main.py generate-batch \
@@ -141,21 +141,22 @@ python main.py generate-batch \
   --c FR
 ```
 
-CLI flags:
+Flags da CLI:
 
-- `--c` country: `BR`, `US`, `FR`
-- `--g` gender: `male`, `female`
-- `--amin` minimum age
-- `--amax` maximum age
-- `--f` format: `compact`, `pretty`
-- `--count` batch size for `generate-batch`
+- `--c` país: `BR`, `US`, `FR`
+- `--g` gênero: `male`, `female`
+- `--amin` idade mínima
+- `--amax` idade máxima
+- `--f` formato: `compact`, `pretty`
+- `--count` tamanho do lote para `generate-batch`
 
-CLI defaults:
+Padrões da CLI:
 
-- synthetic national identifier included by default
-- one email and one password always shown
-- pretty output by default
-- no `json` or `csv` output mode in CLI
+- identificador nacional sintético incluído por padrão
+- um e-mail e uma senha sempre visíveis
+- `pretty` por padrão
+- sem modo `json` ou `csv` na CLI
+- SimpleLogin habilitado por padrão, com fallback automático
 
 ### API
 
@@ -170,7 +171,7 @@ Endpoints:
 - `POST /generate-profile`
 - `POST /generate-batch`
 
-Example request:
+Exemplo de requisição:
 
 ```json
 {
@@ -178,16 +179,16 @@ Example request:
   "gender": "male",
   "age_min": 21,
   "age_max": 45,
-  "use_simplelogin": false,
+  "use_simplelogin": true,
   "seed": 10
 }
 ```
 
-## Environment Variables
+## Variáveis de Ambiente
 
-See [`.env.example`](./.env.example).
+Veja [`.env.example`](./.env.example).
 
-Important ones:
+Principais:
 
 - `SIMPLELOGIN_API_KEY`
 - `SIMPLELOGIN_BASE_URL`
@@ -195,12 +196,12 @@ Important ones:
 - `FALLBACK_EMAIL_DOMAINS`
 - `DEFAULT_COUNTRY_CODE`
 
-## Testing
+## Testes
 
 ```bash
 .venv/bin/python -m pytest -q
 ```
 
-## Sample Outputs
+## Exemplos
 
-- [BR sample JSON](./examples/sample_profile_br.json)
+- [Exemplo JSON BR](./examples/sample_profile_br.json)

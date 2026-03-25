@@ -16,7 +16,7 @@ from synthetic_profiles.services.country_registry import CountryRegistry
 from synthetic_profiles.services.output_formatter import OutputFormatter
 
 configure_logging(level=logging.ERROR)
-app = typer.Typer(help="Synthetic profile generator CLI.")
+app = typer.Typer(help="CLI do gerador de perfis sintéticos.")
 settings = Settings()
 generator = build_profile_generator(settings)
 registry = CountryRegistry()
@@ -26,7 +26,7 @@ formatter = OutputFormatter()
 def _normalize_output_format(value: str) -> str:
     normalized = value.strip().lower()
     if normalized not in {"compact", "pretty"}:
-        raise typer.BadParameter("format must be one of: compact, pretty")
+        raise typer.BadParameter("o formato deve ser um destes: compact, pretty")
     return normalized
 
 

@@ -7,7 +7,7 @@ from synthetic_profiles.utils.exceptions import UnsupportedCountryError
 
 
 class CountryRegistry:
-    """Resolve country metadata and locale packs."""
+    """Resolve metadados de país e pacotes de locale."""
 
     def __init__(self) -> None:
         self._starter_packs = STARTER_PACKS
@@ -18,7 +18,7 @@ class CountryRegistry:
     def get_pack(self, country_code: str) -> tuple[CountryPack, CountryPackMetadata]:
         if not self.is_valid_country_code(country_code):
             raise UnsupportedCountryError(
-                f"Unsupported country_code: {country_code}. Supported values are BR, US, and FR."
+                f"country_code não suportado: {country_code}. Os valores aceitos são BR, US e FR."
             )
         pack = self._starter_packs[country_code]
         return pack, self._build_metadata(pack, fallback_used=False)

@@ -7,7 +7,7 @@ from typing import Any
 
 
 class JsonFormatter(logging.Formatter):
-    """Render structured JSON logs."""
+    """Renderiza logs estruturados em JSON."""
 
     def format(self, record: logging.LogRecord) -> str:
         payload: dict[str, Any] = {

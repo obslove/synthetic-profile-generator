@@ -67,7 +67,7 @@ def test_age_generator_weights_favor_adult_ranges() -> None:
 def test_location_generator_returns_only_country() -> None:
     location = LocationGenerator().generate(pack=STARTER_PACKS["BR"])
 
-    assert location.country == "Brazil"
+    assert location.country == "Brasil"
     assert location.country_code == "BR"
 
 

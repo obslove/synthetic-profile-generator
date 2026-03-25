@@ -4,7 +4,7 @@ from synthetic_profiles.models.enums import Gender
 
 
 class GenderResolver:
-    """Return normalized gender enum values."""
+    """Retorna valores normalizados do enum de gênero."""
 
     def resolve(self, gender: Gender) -> Gender:
         return gender

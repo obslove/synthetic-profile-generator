@@ -8,7 +8,7 @@ from synthetic_profiles.utils.randomizer import GenerationContext
 
 
 class PasswordGenerator:
-    """Generate strong passwords and estimate entropy."""
+    """Gera senhas fortes e estima a entropia."""
 
     def generate(
         self,
@@ -39,7 +39,7 @@ class PasswordGenerator:
             pools = ["".join(char for char in pool if char not in ambiguous) for pool in pools]
 
         if not characters or any(not pool for pool in pools):
-            raise ValueError("Password character set cannot be empty")
+            raise ValueError("O conjunto de caracteres da senha não pode estar vazio")
 
         password_chars = [rng.choice(pool) for pool in pools]
         while len(password_chars) < length:

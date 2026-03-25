@@ -37,7 +37,7 @@ class ProfileGeneratorDependencies:
 
 
 class ProfileGenerator:
-    """Generate minimal synthetic profiles for testing and demos."""
+    """Gera perfis sintéticos mínimos para testes e demonstrações."""
 
     IDENTIFIER_BY_COUNTRY = {
         "BR": "cpf",
@@ -100,11 +100,11 @@ class ProfileGenerator:
         if provider_metadata.warning_message:
             warnings.append(provider_metadata.warning_message)
         if not emails:
-            warnings.append("No email address was generated.")
+            warnings.append("Nenhum endereço de e-mail foi gerado.")
 
         if request.include_cpf and not identifiers:
             warnings.append(
-                "No synthetic national identifier generator is available for the selected country."
+                "Não há gerador de identificador nacional sintético disponível para o país selecionado."
             )
 
         return SyntheticProfile(

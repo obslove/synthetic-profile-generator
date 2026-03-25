@@ -6,7 +6,7 @@ from synthetic_profiles.services.country_registry import CountryRegistry
 
 
 class LocaleResolver:
-    """Resolve a country code to the best available locale pack."""
+    """Resolve um código de país para o melhor pacote de locale disponível."""
 
     def __init__(self, registry: CountryRegistry) -> None:
         self._registry = registry

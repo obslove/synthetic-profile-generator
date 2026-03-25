@@ -25,19 +25,19 @@ def pack(
 STARTER_PACKS: dict[str, CountryPack] = {
     "BR": pack(
         country_code="BR",
-        country_name="Brazil",
+        country_name="Brasil",
         languages=("pt-BR",),
         naming_style="lusophone multi-surname",
     ),
     "US": pack(
         country_code="US",
-        country_name="United States",
+        country_name="Estados Unidos",
         languages=("en-US",),
         naming_style="anglophone single-surname",
     ),
     "FR": pack(
         country_code="FR",
-        country_name="France",
+        country_name="França",
         languages=("fr-FR",),
         naming_style="francophone single-surname",
     ),

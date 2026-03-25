@@ -9,7 +9,7 @@ from synthetic_profiles.utils.randomizer import GenerationContext
 
 
 class FallbackEmailProvider(EmailProvider):
-    """Generate clearly synthetic addresses on reserved domains with varied local-part strategies."""
+    """Gera endereços claramente sintéticos em domínios reservados com estratégias variadas."""
 
     descriptor_words = (
         "lab",
@@ -80,8 +80,8 @@ class FallbackEmailProvider(EmailProvider):
         return addresses, ProviderMetadata(
             provider_selected=EmailProviderName.FALLBACK,
             fallback_occurred=False,
-            warning_message="Reserved-domain fallback email provider used.",
+            warning_message="Provedor de fallback com domínio reservado utilizado.",
             degraded_mode=False,
-            provider_reason="Fallback provider selected for synthetic reserved-domain email generation.",
+            provider_reason="Provedor de fallback selecionado para geração sintética em domínio reservado.",
             provider_reason_code="fallback_selected",
         )

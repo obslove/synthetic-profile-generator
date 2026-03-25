@@ -5,7 +5,7 @@ from synthetic_profiles.utils.randomizer import GenerationContext
 
 
 class AgeGenerator:
-    """Generate ages using a more natural weighted distribution."""
+    """Gera idades usando uma distribuição ponderada mais natural."""
 
     def generate(self, context: GenerationContext, minimum: int, maximum: int) -> tuple[int, AgeGroup]:
         rng = context.rng("age")

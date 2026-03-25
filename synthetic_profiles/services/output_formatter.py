@@ -6,7 +6,7 @@ from synthetic_profiles.models.schemas import BatchGenerationResponse, Synthetic
 
 
 class OutputFormatter:
-    """Render simplified profile data for JSON and CLI output."""
+    """Renderiza dados simplificados do perfil para JSON e saída de CLI."""
 
     def _identifier_label(self, identifier_type: str | None) -> str:
         if identifier_type == "cpf":
@@ -15,7 +15,7 @@ class OutputFormatter:
             return "SSN-like"
         if identifier_type == "nir_like":
             return "NIR-like"
-        return "National ID"
+        return "Identificador nacional"
 
     def format_profile(
         self,
@@ -93,7 +93,7 @@ class OutputFormatter:
         if "profiles" in payload:
             chunks = []
             for index, profile in enumerate(payload["profiles"], start=1):
-                chunks.append(f"Profile {index}\n{self.to_pretty_text(profile, debug=debug)}")
+                chunks.append(f"Perfil {index}\n{self.to_pretty_text(profile, debug=debug)}")
             return "\n\n".join(chunks)
 
         identity = payload["identity"]
@@ -102,10 +102,10 @@ class OutputFormatter:
         credentials = payload["credentials"]
         cli_hints = payload.get("_cli", {})
         lines = [
-            "Identity",
-            f"  Name: {identity['full_name']}",
-            f"  Gender: {identity['gender']}",
-            f"  Age: {identity['age']}",
+            "Identidade",
+            f"  Nome: {identity['full_name']}",
+            f"  Gênero: {identity['gender']}",
+            f"  Idade: {identity['age']}",
             *(
                 [
                     f"  {self._identifier_label(identity.get('national_identifier_type'))}: {identity['national_identifier']}"
@@ -114,28 +114,28 @@ class OutputFormatter:
                 else []
             ),
             "",
-            "Location",
-            f"  Country: {location['country']} ({location['country_code']})",
+            "Localização",
+            f"  País: {location['country']} ({location['country_code']})",
             "",
-            "Family",
-            f"  Father: {family['father']['full_name']} | {family['father']['gender']} | {family['father']['age']}"
+            "Família",
+            f"  Pai: {family['father']['full_name']} | {family['father']['gender']} | {family['father']['age']}"
             + (
                 f" | {self._identifier_label(family['father'].get('national_identifier_type'))} {family['father']['national_identifier']}"
                 if family["father"].get("national_identifier")
                 else ""
             ),
-            f"  Mother: {family['mother']['full_name']} | {family['mother']['gender']} | {family['mother']['age']}"
+            f"  Mãe: {family['mother']['full_name']} | {family['mother']['gender']} | {family['mother']['age']}"
             + (
                 f" | {self._identifier_label(family['mother'].get('national_identifier_type'))} {family['mother']['national_identifier']}"
                 if family["mother"].get("national_identifier")
                 else ""
             ),
             "",
-            "Credentials",
-            f"  Email: {credentials['email'] or 'not generated'}",
-            f"  Password: {credentials['password'] or 'not generated'}",
+            "Credenciais",
+            f"  E-mail: {credentials['email'] or 'não gerado'}",
+            f"  Senha: {credentials['password'] or 'não gerada'}",
             *(
-                [f"  Email Provider: {cli_hints['email_provider_summary']}"]
+                [f"  Provedor de e-mail: {cli_hints['email_provider_summary']}"]
                 if cli_hints.get("email_provider_summary")
                 else []
             ),
@@ -144,13 +144,13 @@ class OutputFormatter:
             lines.extend(
                 [
                     "",
-                    "Debug",
-                    f"  Provider: {payload['debug']['provider']['provider_used']}",
+                    "Depuração",
+                    f"  Provedor: {payload['debug']['provider']['provider_used']}",
                     f"  Fallback: {payload['debug']['provider']['fallback_occurred']}",
-                    f"  Reason: {payload['debug']['provider']['reason_code']}",
-                    f"  Deterministic: {payload['debug']['generation']['deterministic_mode']}",
+                    f"  Motivo: {payload['debug']['provider']['reason_code']}",
+                    f"  Determinístico: {payload['debug']['generation']['deterministic_mode']}",
                     f"  Seed: {payload['debug']['generation']['seed_used']}",
-                    f"  Generation ID: {payload['debug']['generation']['generation_id']}",
+                    f"  ID de geração: {payload['debug']['generation']['generation_id']}",
                 ]
             )
         return "\n".join(lines)
@@ -165,16 +165,18 @@ class OutputFormatter:
         lines = [
             f"{identity['full_name']} | {identity['gender']} | {identity['age']}",
             f"{location['country']} ({location['country_code']})",
-            f"Email: {credentials['email'] or 'not generated'}",
-            f"Password: {credentials['password'] or 'not generated'}",
+            f"E-mail: {credentials['email'] or 'não gerado'}",
+            f"Senha: {credentials['password'] or 'não gerada'}",
         ]
         if cli_hints.get("email_provider_summary"):
-            lines.append(f"Email Provider: {cli_hints['email_provider_summary']}")
+            lines.append(f"Provedor de e-mail: {cli_hints['email_provider_summary']}")
         if identity.get("national_identifier"):
             lines.append(
                 f"{self._identifier_label(identity.get('national_identifier_type'))}: {identity['national_identifier']}"
             )
         if debug and "debug" in payload:
             provider = payload["debug"]["provider"]
-            lines.append(f"Provider: {provider['provider_used']} | fallback={provider['fallback_occurred']} | reason={provider['reason_code']}")
+            lines.append(
+                f"Provedor: {provider['provider_used']} | fallback={provider['fallback_occurred']} | motivo={provider['reason_code']}"
+            )
         return "\n".join(lines)

@@ -6,7 +6,7 @@ from synthetic_profiles.utils.randomizer import GenerationContext, choice_with_p
 
 
 class NameGenerator:
-    """Generate locale-aware synthetic names with adaptive repetition penalties."""
+    """Gera nomes sintéticos por locale com penalidade adaptativa de repetição."""
 
     _blocked_full_names = {
         "lionel messi",
