@@ -1,0 +1,33 @@
+{
+  "identity": {
+    "full_name": "Paulo Murilo Almeida Rangel",
+    "gender": "male",
+    "age": 53,
+    "national_identifier": "265.683.975-04",
+    "national_identifier_type": "cpf"
+  },
+  "location": {
+    "country": "Brazil",
+    "country_code": "BR"
+  },
+  "family": {
+    "father": {
+      "full_name": "Lucas Rangel",
+      "gender": "male",
+      "age": 80,
+      "national_identifier": "761.012.547-47",
+      "national_identifier_type": "cpf"
+    },
+    "mother": {
+      "full_name": "Dandara Almeida",
+      "gender": "female",
+      "age": 83,
+      "national_identifier": "120.975.367-78",
+      "national_identifier_type": "cpf"
+    }
+  },
+  "credentials": {
+    "email": "ember-rangel441@example.org",
+    "password": "aNHdN^,:ND3V6yY:G9g#-TT*"
+  }
+}
