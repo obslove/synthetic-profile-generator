@@ -6,7 +6,7 @@ Gerador enxuto de perfis sintéticos para QA, desenvolvimento, staging e demonst
 
 Este projeto gera perfis claramente fictícios e seguros para teste.
 
-Ele foi simplificado para produzir apenas:
+Ele produz apenas:
 
 - `identity`
 - `location` somente com país
@@ -14,68 +14,37 @@ Ele foi simplificado para produzir apenas:
 - `credentials` com um e-mail e uma senha
 - identificador nacional sintético para `BR`, `US` e `FR`
 
-O foco aqui é:
-
-- saída limpa
-- uso rápido via CLI e API
-- nomes amplos e variados
-- comportamento determinístico quando desejado
-- fallback seguro de e-mail
-
-## O que ele faz
-
-- gera nome sintético por país
-- gera gênero `male` ou `female`
-- gera idade ou usa uma idade fixa
-- gera pai e mãe com pelo menos 20 anos a mais
-- gera e-mail via SimpleLogin quando disponível
-- cai para domínio reservado (`example.*`) quando necessário
-- gera senha forte
-- gera identificador sintético por país:
-  - `BR` -> `cpf`
-  - `US` -> `ssn_like`
-  - `FR` -> `nir_like`
-
-## Regras de segurança
-
-- não gera identidades reais
-- não gera endereço residencial detalhado
-- não gera inbox enganosa operacional
-- não gera identificadores para uso real
-- não serve para fraude, impersonação, KYC ou bypass
-
-## Países suportados
-
-- `BR`
-- `US`
-- `FR`
-
-Cada país incluído atualmente possui:
-
-- `900` nomes masculinos
-- `900` nomes femininos
-- `900` sobrenomes
-
 ## Instalação rápida
 
-### Bash / Zsh
-
-```bash
-git clone <repo>
-cd synthetic-profile-generator
-python -m venv .venv
-source .venv/bin/activate
-pip install -e .[dev]
-```
-
-### Fish
+`fish`
 
 ```fish
-git clone <repo>
-cd synthetic-profile-generator
-python -m venv .venv
-source .venv/bin/activate.fish
-pip install -e .[dev]
+curl -fsSL https://raw.githubusercontent.com/obslove/synthetic-profile-generator/main/install.sh | bash
+```
+
+`bash`
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/obslove/synthetic-profile-generator/main/install.sh)
+```
+
+`zsh`
+
+```zsh
+bash <(curl -fsSL https://raw.githubusercontent.com/obslove/synthetic-profile-generator/main/install.sh)
+```
+
+Quando executado fora do repositório, o script:
+
+- clona ou atualiza `~/Repositories/synthetic-profile-generator`
+- cria `.venv`
+- instala o projeto
+- cria o comando `synthetic-profile-generator` em `~/.local/bin`
+
+Se `~/.local/bin` ainda não estiver no `PATH`, exporte manualmente:
+
+```bash
+export PATH="$HOME/.local/bin:$PATH"
 ```
 
 ## Uso rápido
@@ -83,31 +52,31 @@ pip install -e .[dev]
 Gerar um perfil:
 
 ```bash
-python main.py generate --c BR --g male
+synthetic-profile-generator generate --c BR --g male
 ```
 
 Fixar a idade:
 
 ```bash
-python main.py generate --c US --g female --a 41
+synthetic-profile-generator generate --c US --g female --a 41
 ```
 
 Escolher o tamanho da senha:
 
 ```bash
-python main.py generate --c FR --g female -q 32
+synthetic-profile-generator generate --c FR --g female -q 32
 ```
 
 Gerar em modo compacto:
 
 ```bash
-python main.py generate --c BR --g male --f compact
+synthetic-profile-generator generate --c BR --g male --f compact
 ```
 
 Gerar um lote:
 
 ```bash
-python main.py generate-batch --count 10 --c US
+synthetic-profile-generator generate-batch --count 10 --c US
 ```
 
 ## Flags da CLI
@@ -141,6 +110,40 @@ python main.py generate-batch --count 10 --c US
 - se SimpleLogin falhar, o fallback aparece de forma explícita
 - `json` e `csv` não fazem parte da CLI atual
 
+## Países suportados
+
+- `BR`
+- `US`
+- `FR`
+
+Cada país incluído atualmente possui:
+
+- `900` nomes masculinos
+- `900` nomes femininos
+- `900` sobrenomes
+
+## O que ele faz
+
+- gera nome sintético por país
+- gera gênero `male` ou `female`
+- gera idade aleatória ou fixa
+- gera pai e mãe com pelo menos 20 anos a mais
+- gera e-mail via SimpleLogin quando disponível
+- cai para domínio reservado (`example.*`) quando necessário
+- gera senha forte
+- gera identificador sintético por país:
+  - `BR` -> `cpf`
+  - `US` -> `ssn_like`
+  - `FR` -> `nir_like`
+
+## Regras de segurança
+
+- não gera identidades reais
+- não gera endereço residencial detalhado
+- não gera inbox enganosa operacional
+- não gera identificadores para uso real
+- não serve para fraude, impersonação, KYC ou bypass
+
 ## API
 
 Subir a API:
@@ -171,8 +174,6 @@ Exemplo de body:
 ```
 
 ## Estrutura da saída
-
-A saída limpa fica neste formato:
 
 ```json
 {
@@ -244,9 +245,21 @@ Principais:
 - `DEFAULT_COUNTRY_CODE`
 - `STRICT_IDENTIFIER_SAFETY_MODE`
 
-## Testes
+## Uso local
+
+Se você já estiver dentro do repositório:
 
 ```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install -e .[dev]
+python main.py generate --c BR --g male
+```
+
+## Validação local
+
+```bash
+bash -n install.sh
 .venv/bin/python -m pytest -q
 ```
 

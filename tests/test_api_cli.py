@@ -110,6 +110,32 @@ def test_pretty_and_compact_modes_surface_credentials() -> None:
     assert "Provedor de e-mail: fallback (missing_api_key)" in compact.stdout
 
 
+def test_cli_q_changes_password_length() -> None:
+    runner = CliRunner()
+
+    result = runner.invoke(
+        cli_app,
+        ["generate", "--c", "US", "-q", "32"],
+    )
+
+    assert result.exit_code == 0
+    password_line = next(line for line in result.stdout.splitlines() if "Senha:" in line)
+    password_value = password_line.split("Senha:", 1)[1].strip()
+    assert len(password_value) == 32
+
+
+def test_cli_a_sets_exact_age() -> None:
+    runner = CliRunner()
+
+    result = runner.invoke(
+        cli_app,
+        ["generate", "--c", "US", "--a", "41"],
+    )
+
+    assert result.exit_code == 0
+    assert "Idade: 41" in result.stdout
+
+
 def test_cli_rejects_json_and_csv_formats() -> None:
     runner = CliRunner()
 
