@@ -103,14 +103,14 @@ Use isso apenas para testes.
 ### Setup local
 
 ```bash
-cd /home/ven/synthetic-profile-generator
+cd synthetic-profile-generator
 source .venv/bin/activate
 ```
 
 No Fish:
 
 ```fish
-cd /home/ven/synthetic-profile-generator
+cd synthetic-profile-generator
 source .venv/bin/activate.fish
 ```
 
