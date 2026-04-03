@@ -88,6 +88,7 @@ class OutputFormatter:
         }
         if include_cli_hints:
             provider_summary = None
+            provider_hint = None
             if profile.provider_metadata.fallback_occurred:
                 provider_summary = (
                     f"{profile.provider_metadata.provider_selected.value}"
@@ -97,7 +98,11 @@ class OutputFormatter:
                         else ""
                     )
                 )
-            payload["_cli"] = {"email_provider_summary": provider_summary}
+                provider_hint = self._provider_hint(profile)
+            payload["_cli"] = {
+                "email_provider_summary": provider_summary,
+                "email_provider_hint": provider_hint,
+            }
         if debug:
             payload["debug"] = {
                 "provider": {
@@ -110,6 +115,17 @@ class OutputFormatter:
                 "warnings": profile.warnings,
             }
         return payload
+
+    def _provider_hint(self, profile: SyntheticProfile) -> str | None:
+        reason_code = profile.provider_metadata.provider_reason_code
+        reason = (profile.provider_metadata.provider_reason or "").casefold()
+        if reason_code == "missing_api_key":
+            return "Para aliases reais, configure SIMPLELOGIN_API_KEY no .env."
+        if reason_code == "rate_limit":
+            return "SimpleLogin limitou as requisições; tente novamente mais tarde."
+        if reason_code == "http_400" and "maximum of 10 aliases" in reason:
+            return "Seu plano free do SimpleLogin atingiu o limite de aliases."
+        return None
 
     def format_batch(
         self,
@@ -235,6 +251,11 @@ class OutputFormatter:
                 if cli_hints.get("email_provider_summary")
                 else []
             ),
+            *(
+                [f"  Aviso: {cli_hints['email_provider_hint']}"]
+                if cli_hints.get("email_provider_hint")
+                else []
+            ),
         ]
         if debug and "debug" in payload:
             lines.extend(
@@ -295,6 +316,8 @@ class OutputFormatter:
         ]
         if cli_hints.get("email_provider_summary"):
             lines.append(f"Provedor de e-mail: {cli_hints['email_provider_summary']}")
+        if cli_hints.get("email_provider_hint"):
+            lines.append(f"Aviso: {cli_hints['email_provider_hint']}")
         if identity.get("national_identifier"):
             lines.append(
                 f"{self._identifier_label(identity.get('national_identifier_type'))}: {identity['national_identifier']}"

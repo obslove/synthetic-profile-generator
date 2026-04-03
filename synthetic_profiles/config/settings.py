@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from typing import Annotated
+
 from pydantic import Field, field_validator
-from pydantic_settings import BaseSettings, SettingsConfigDict
+from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 class Settings(BaseSettings):
     """Configurações da aplicação carregadas a partir de variáveis de ambiente."""
@@ -19,7 +21,7 @@ class Settings(BaseSettings):
         alias="SIMPLELOGIN_BASE_URL",
     )
     request_timeout_seconds: float = Field(default=5.0, alias="REQUEST_TIMEOUT_SECONDS")
-    fallback_email_domains: list[str] = Field(
+    fallback_email_domains: Annotated[list[str], NoDecode] = Field(
         default_factory=lambda: ["example.com", "example.org", "example.net"],
         alias="FALLBACK_EMAIL_DOMAINS",
     )
