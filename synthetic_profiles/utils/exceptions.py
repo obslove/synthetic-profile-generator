@@ -9,6 +9,10 @@ class UnsupportedCountryError(SyntheticProfileError):
     """Disparado quando um código de país não é válido para a aplicação."""
 
 
+class UnsupportedSubdivisionError(SyntheticProfileError):
+    """Disparado quando uma subdivisão não é válida para o país selecionado."""
+
+
 class EmailProviderError(SyntheticProfileError):
     """Disparado quando a geração de e-mail via provedor falha."""
 

@@ -137,7 +137,6 @@ def test_identifier_generation_is_test_only() -> None:
 
     cpf = generators[("BR", "cpf")].generate(random.Random(1))
     ssn_like = generators[("US", "ssn_like")].generate(random.Random(2))
-    nir_like = generators[("FR", "nir_like")].generate(random.Random(3))
 
     assert cpf.safe_for_testing_only is True
     assert cpf.is_synthetic_identifier is True
@@ -145,6 +144,3 @@ def test_identifier_generation_is_test_only() -> None:
     assert ssn_like.safe_for_testing_only is True
     assert ssn_like.identifier_type == "ssn_like"
     assert ssn_like.formatted_value.startswith("000-")
-    assert nir_like.safe_for_testing_only is True
-    assert nir_like.identifier_type == "nir_like"
-    assert nir_like.formatted_value.startswith("7 ")

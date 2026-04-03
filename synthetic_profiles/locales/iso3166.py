@@ -75,7 +75,6 @@ ISO_3166_ALPHA2: dict[str, str] = {
     "FK": "Falkland Islands",
     "FM": "Micronesia",
     "FO": "Faroe Islands",
-    "FR": "France",
     "GA": "Gabon",
     "GB": "United Kingdom",
     "GD": "Grenada",
@@ -251,4 +250,3 @@ ISO_3166_ALPHA2: dict[str, str] = {
     "ZM": "Zambia",
     "ZW": "Zimbabwe",
 }
-

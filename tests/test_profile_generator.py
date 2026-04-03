@@ -63,7 +63,7 @@ def test_optional_national_identifier_is_generated_for_br() -> None:
                 gender=Gender.MALE,
                 seed=9,
                 use_simplelogin=False,
-                include_cpf=True,
+                include_national_identifier=True,
             )
         )
     )

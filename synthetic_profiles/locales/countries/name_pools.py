@@ -93,40 +93,6 @@ US_SURNAME_BASE = (
     "Prescott", "Ramsey", "Shelton", "Townsend", "Valentine", "Winters", "York", "Abbott", "Bishop", "Cross",
 )
 
-FR_MALE_BASE = (
-    "Lucas", "Theo", "Jules", "Maxime", "Leo", "Noe", "Adrien", "Arthur", "Bastien", "Nathan",
-    "Hugo", "Enzo", "Louis", "Tom", "Victor", "Alexis", "Romain", "Mathis", "Paul", "Gabriel",
-    "Antoine", "Clement", "Tristan", "Eliott", "Quentin", "Robin", "Amaury", "Benoit", "Cedric", "Damien",
-    "Etienne", "Fabien", "Gaspard", "Henri", "Ismael", "Jean", "Kevin", "Laurent", "Martin", "Nicolas",
-    "Octave", "Pierre", "Raphael", "Sebastien", "Thierry", "Ulysse", "Valentin", "William", "Yanis", "Zacharie",
-    "Alban", "Brice", "Corentin", "Dorian", "Edouard", "Florian", "Guillaume", "Helios", "Ilan", "Jerome",
-    "Killian", "Loic", "Mael", "Nolan", "Oscar", "Pascal", "Remi", "Sylvain", "Titouan", "Vivien",
-    "Walid", "Yohann", "Achille", "Baptiste", "Charles", "Denis", "Emilien", "Felix", "Gregoire", "Joris",
-)
-
-FR_FEMALE_BASE = (
-    "Emma", "Chloe", "Ines", "Camille", "Louise", "Manon", "Jade", "Nina", "Sarah", "Lea",
-    "Zoe", "Lucie", "Jeanne", "Alice", "Eva", "Clara", "Lina", "Elsa", "Anais", "Juliette",
-    "Margot", "Amelie", "Noemie", "Marine", "Celia", "Mila", "Adele", "Berenice", "Capucine", "Delphine",
-    "Elodie", "Fanny", "Garance", "Helene", "Iris", "Josephine", "Karine", "Laure", "Maeva", "Nadege",
-    "Oceane", "Pauline", "Quitterie", "Romane", "Salome", "Tiphaine", "Victoire", "Wendy", "Yasmine", "Aurore",
-    "Brune", "Coralie", "Diane", "Estelle", "Flavie", "Gaelle", "Hortense", "Ingrid", "Justine", "Laurine",
-    "Melanie", "Nora", "Ophelie", "Penelope", "Raphaelle", "Solene", "Thea", "Valentine", "Ysee", "Aline",
-    "Bianca", "Caroline", "Domitille", "Emilie", "Fleur", "Gaia", "Honorine", "Leonie", "Maud", "Ninon",
-)
-
-FR_SURNAME_BASE = (
-    "Mercier", "Roux", "Blanchard", "Chevalier", "Garnier", "Colin", "Perrin", "Marchand", "Lambert", "Fabre",
-    "Moreau", "Andre", "Fontaine", "Leroy", "Boyer", "Gautier", "Barbier", "Renard", "Dupont", "Caron",
-    "Lopez", "Meyer", "Renaud", "Julien", "Aubry", "Masson", "Bertrand", "Charrier", "Delorme", "Etienne",
-    "Fournier", "Girard", "Hubert", "Imbert", "Joly", "Klein", "Lemoine", "Morin", "Navarro", "Olivier",
-    "Pichon", "Quentin", "Riviere", "Savary", "Tessier", "Vidal", "Wagner", "Yvard", "Zeller", "Arnaud",
-    "Bourgeois", "Chauvin", "Deschamps", "Esnault", "Fleury", "Gaudin", "Hebert", "Isnard", "Jourdan", "Lacroix",
-    "Monnier", "Nicolas", "Perrot", "Richard", "Schmitt", "Texier", "Vaillant", "Weber", "Briand", "Cousin",
-    "Deniau", "Forest", "Giraud", "Hamon", "Lefort", "Pons", "Rey", "Simon", "Teillard", "Vasseur",
-)
-
-
 NAME_POOLS: dict[str, dict[str, tuple[str, ...]]] = {
     "BR": {
         "male": _build_massive_pool(BR_MALE_BASE),
@@ -137,11 +103,6 @@ NAME_POOLS: dict[str, dict[str, tuple[str, ...]]] = {
         "male": _build_massive_pool(US_MALE_BASE),
         "female": _build_massive_pool(US_FEMALE_BASE),
         "surnames": _build_massive_pool(US_SURNAME_BASE),
-    },
-    "FR": {
-        "male": _build_massive_pool(FR_MALE_BASE),
-        "female": _build_massive_pool(FR_FEMALE_BASE),
-        "surnames": _build_massive_pool(FR_SURNAME_BASE),
     },
 }
 

@@ -31,19 +31,6 @@ def _us_ssn_like(rng: random.Random) -> tuple[str, str]:
     return raw, formatted
 
 
-def _fr_nir_like(rng: random.Random) -> tuple[str, str]:
-    # Leading 7 keeps the structure FR-like without creating a real-world compatible NIR.
-    year = rng.randint(60, 99)
-    month = rng.randint(1, 12)
-    synthetic_department = 98
-    commune = rng.randint(100, 999)
-    order = rng.randint(100, 999)
-    control = rng.randint(10, 97)
-    raw = f"7{year:02d}{month:02d}{synthetic_department:02d}{commune:03d}{order:03d}{control:02d}"
-    formatted = f"7 {year:02d} {month:02d} {synthetic_department:02d} {commune:03d} {order:03d} {control:02d}"
-    return raw, formatted
-
-
 def build_identifier_generators(*, strict_identifier_safety_mode: bool) -> dict[tuple[str, str], IdentifierGenerator]:
     return {
         ("BR", "cpf"): __import__(
@@ -54,10 +41,5 @@ def build_identifier_generators(*, strict_identifier_safety_mode: bool) -> dict[
             country_code="US",
             identifier_type="ssn_like",
             formatter=_us_ssn_like,
-        ),
-        ("FR", "nir_like"): PlaceholderIdentifierGenerator(
-            country_code="FR",
-            identifier_type="nir_like",
-            formatter=_fr_nir_like,
         ),
     }

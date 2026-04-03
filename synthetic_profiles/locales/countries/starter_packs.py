@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from synthetic_profiles.locales.base import CountryPack
 from synthetic_profiles.locales.countries.name_pools import names_for
+from synthetic_profiles.locales.countries.subdivisions import (
+    list_subdivisions,
+    subdivision_type_for,
+    subdivision_types_for,
+)
 
 
 def pack(
@@ -16,6 +21,9 @@ def pack(
         country_name=country_name,
         languages=languages,
         naming_style=naming_style,
+        subdivision_type=subdivision_type_for(country_code),
+        subdivision_types=subdivision_types_for(country_code),
+        subdivisions=list_subdivisions(country_code),
         male_first_names=names_for(country_code, "male"),
         female_first_names=names_for(country_code, "female"),
         surnames=names_for(country_code, "surnames"),
@@ -34,11 +42,5 @@ STARTER_PACKS: dict[str, CountryPack] = {
         country_name="Estados Unidos",
         languages=("en-US",),
         naming_style="anglophone single-surname",
-    ),
-    "FR": pack(
-        country_code="FR",
-        country_name="França",
-        languages=("fr-FR",),
-        naming_style="francophone single-surname",
     ),
 }

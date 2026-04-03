@@ -10,6 +10,7 @@ from synthetic_profiles.services.email_generation import EmailGenerationService
 from synthetic_profiles.services.family_generator import FamilyGenerator
 from synthetic_profiles.services.gender_resolver import GenderResolver
 from synthetic_profiles.services.locale_resolver import LocaleResolver
+from synthetic_profiles.services.location_generator import LocationGenerator
 from synthetic_profiles.services.name_generator import NameGenerator
 from synthetic_profiles.services.password_generator import PasswordGenerator
 from synthetic_profiles.services.profile_generator import ProfileGenerator, ProfileGeneratorDependencies
@@ -33,6 +34,7 @@ def build_profile_generator(settings: Settings | None = None) -> ProfileGenerato
         locale_resolver=locale_resolver,
         gender_resolver=GenderResolver(),
         age_generator=AgeGenerator(),
+        location_generator=LocationGenerator(),
         name_generator=name_generator,
         family_generator=FamilyGenerator(name_generator),
         email_service=EmailGenerationService(

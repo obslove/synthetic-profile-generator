@@ -10,7 +10,6 @@ from synthetic_profiles.models.schemas import (
     Credentials,
     GenerationRequest,
     Identity,
-    Location,
     RandomnessMetadata,
     SyntheticProfile,
 )
@@ -19,6 +18,7 @@ from synthetic_profiles.services.email_generation import EmailGenerationService
 from synthetic_profiles.services.family_generator import FamilyGenerator
 from synthetic_profiles.services.gender_resolver import GenderResolver
 from synthetic_profiles.services.locale_resolver import LocaleResolver
+from synthetic_profiles.services.location_generator import LocationGenerator
 from synthetic_profiles.services.name_generator import NameGenerator
 from synthetic_profiles.services.password_generator import PasswordGenerator
 from synthetic_profiles.utils.randomizer import GenerationContext
@@ -29,6 +29,7 @@ class ProfileGeneratorDependencies:
     locale_resolver: LocaleResolver
     gender_resolver: GenderResolver
     age_generator: AgeGenerator
+    location_generator: LocationGenerator
     name_generator: NameGenerator
     family_generator: FamilyGenerator
     email_service: EmailGenerationService
@@ -42,7 +43,6 @@ class ProfileGenerator:
     IDENTIFIER_BY_COUNTRY = {
         "BR": "cpf",
         "US": "ssn_like",
-        "FR": "nir_like",
     }
 
     def __init__(self, deps: ProfileGeneratorDependencies) -> None:
@@ -69,7 +69,7 @@ class ProfileGenerator:
         father_identifier = None
         mother_identifier = None
         identifiers = []
-        if request.include_cpf:
+        if request.include_national_identifier:
             identifier_type = self.IDENTIFIER_BY_COUNTRY.get(request.country_code)
             generator = self._deps.identifier_generators.get((request.country_code, identifier_type)) if identifier_type else None
             if generator is not None:
@@ -102,7 +102,7 @@ class ProfileGenerator:
         if not emails:
             warnings.append("Nenhum endereço de e-mail foi gerado.")
 
-        if request.include_cpf and not identifiers:
+        if request.include_national_identifier and not identifiers:
             warnings.append(
                 "Não há gerador de identificador nacional sintético disponível para o país selecionado."
             )
@@ -115,7 +115,11 @@ class ProfileGenerator:
                 national_identifier=self_identifier.formatted_value if self_identifier else None,
                 national_identifier_type=self_identifier.identifier_type if self_identifier else None,
             ),
-            location=Location(country=locale_pack.country_name, country_code=locale_pack.country_code),
+            location=self._deps.location_generator.generate(
+                pack=locale_pack,
+                state_query=request.state,
+                city_query=request.city,
+            ),
             family=family,
             credentials=Credentials(
                 email=emails[0].address if emails else None,

@@ -22,6 +22,46 @@ def test_generation_request_validates_ranges() -> None:
         assert False, "Expected validation error"
 
 
+def test_generation_request_rejects_conflicting_identifier_aliases() -> None:
+    try:
+        GenerationRequest(
+            country_code="US",
+            include_national_identifier=True,
+            include_cpf=False,
+        )
+    except ValueError:
+        assert True
+    else:
+        assert False, "Expected validation error"
+
+
+def test_generation_request_rejects_state_not_supported_by_country() -> None:
+    try:
+        GenerationRequest(country_code="BR", state="CA")
+    except ValueError:
+        assert True
+    else:
+        assert False, "Expected validation error"
+
+
+def test_generation_request_rejects_city_without_state() -> None:
+    try:
+        GenerationRequest(country_code="BR", city="São Paulo")
+    except ValueError:
+        assert True
+    else:
+        assert False, "Expected validation error"
+
+
+def test_generation_request_rejects_city_not_supported_by_selected_state() -> None:
+    try:
+        GenerationRequest(country_code="BR", state="SC", city="Campinas")
+    except ValueError:
+        assert True
+    else:
+        assert False, "Expected validation error"
+
+
 def test_name_generator_respects_structure_and_gender() -> None:
     generator = NameGenerator()
     pack = STARTER_PACKS["US"]
@@ -69,12 +109,53 @@ def test_location_generator_returns_only_country() -> None:
 
     assert location.country == "Brasil"
     assert location.country_code == "BR"
+    assert location.state is None
+    assert location.state_code is None
+
+
+def test_location_generator_can_resolve_selected_state() -> None:
+    location = LocationGenerator().generate(pack=STARTER_PACKS["US"], state_query="CA")
+
+    assert location.country == "Estados Unidos"
+    assert location.country_code == "US"
+    assert location.state == "California"
+    assert location.state_code == "CA"
+    assert location.state_type == "state"
+
+
+def test_location_generator_can_resolve_selected_city() -> None:
+    location = LocationGenerator().generate(
+        pack=STARTER_PACKS["BR"],
+        state_query="SP",
+        city_query="Campinas",
+    )
+
+    assert location.state == "São Paulo"
+    assert location.city == "Campinas"
+
+
+def test_location_generator_accepts_city_punctuation_variants() -> None:
+    location = LocationGenerator().generate(
+        pack=STARTER_PACKS["BR"],
+        state_query="SC",
+        city_query="Dionísio-Cerqueira",
+    )
+
+    assert location.state == "Santa Catarina"
+    assert location.city == "Dionísio Cerqueira"
+
+
+def test_location_generator_can_resolve_us_territory() -> None:
+    location = LocationGenerator().generate(pack=STARTER_PACKS["US"], state_query="PR")
+
+    assert location.state == "Puerto Rico"
+    assert location.state_code == "PR"
+    assert location.state_type == "territory"
 
 
 def test_bundled_name_pools_are_broad() -> None:
     br = STARTER_PACKS["BR"]
     us = STARTER_PACKS["US"]
-    fr = STARTER_PACKS["FR"]
 
     assert len(br.male_first_names) == 900
     assert len(br.female_first_names) == 900
@@ -82,9 +163,6 @@ def test_bundled_name_pools_are_broad() -> None:
     assert len(us.male_first_names) == 900
     assert len(us.female_first_names) == 900
     assert len(us.surnames) == 900
-    assert len(fr.male_first_names) == 900
-    assert len(fr.female_first_names) == 900
-    assert len(fr.surnames) == 900
 
 
 def test_password_generator_reports_length_and_entropy() -> None:
@@ -98,17 +176,17 @@ def test_password_generator_reports_length_and_entropy() -> None:
 def test_family_generator_returns_only_parents_and_they_are_older() -> None:
     family = FamilyGenerator(NameGenerator()).generate_parents(
         ctx(9),
-        pack=STARTER_PACKS["FR"],
+        pack=STARTER_PACKS["US"],
         child_age=28,
-        child_full_name="Camille Mercier",
+        child_full_name="Avery Parker",
     )
 
     assert family.father.gender is Gender.MALE
     assert family.mother.gender is Gender.FEMALE
     assert family.father.age >= 48
     assert family.mother.age >= 48
-    assert family.father.full_name.endswith("Mercier")
-    assert not family.mother.full_name.endswith("Mercier")
+    assert family.father.full_name.endswith("Parker")
+    assert not family.mother.full_name.endswith("Parker")
 
 
 def test_family_generator_splits_parent_surnames_for_multi_surname_locales() -> None:
