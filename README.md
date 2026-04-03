@@ -9,10 +9,10 @@ Este projeto gera perfis claramente fictícios e seguros para teste.
 Ele produz apenas:
 
 - `identity`
-- `location` somente com país
+- `location` com país e estado/região opcional
 - `family` somente com pai e mãe
 - `credentials` com um e-mail e uma senha
-- identificador nacional sintético para `BR`, `US` e `FR`
+- identificador nacional sintético para `BR` e `US`
 
 ## Instalação rápida
 
@@ -55,28 +55,59 @@ Gerar um perfil:
 synthetic-profile-generator generate --c BR --g male
 ```
 
-Fixar a idade:
-
-```bash
-synthetic-profile-generator generate --c US --g female --a 41
-```
-
-Escolher o tamanho da senha:
-
-```bash
-synthetic-profile-generator generate --c FR --g female -q 32
-```
-
 Gerar em modo compacto:
 
 ```bash
-synthetic-profile-generator generate --c BR --g male --f compact
+synthetic-profile-generator generate --c BR --f compact
+```
+
+Escolher o estado:
+
+```bash
+synthetic-profile-generator generate --c BR --s SP --g male
+```
+
+Escolher a cidade:
+
+```bash
+synthetic-profile-generator generate --c BR --s SP --ci Campinas --g male
+```
+
+Fixar a idade:
+
+```bash
+synthetic-profile-generator generate --c US --s CA --g female --a 41
 ```
 
 Gerar um lote:
 
 ```bash
-synthetic-profile-generator generate-batch --count 10 --c US
+synthetic-profile-generator generate-batch --n 10 --c US
+```
+
+## E-mails funcionais
+
+Por padrão, a CLI tenta usar SimpleLogin com `--sl`.
+
+Para isso gerar aliases reais, você precisa configurar a API key:
+
+```bash
+cp .env.example .env
+```
+
+Edite o `.env`:
+
+```env
+SIMPLELOGIN_API_KEY=sua_chave_aqui
+SIMPLELOGIN_BASE_URL=https://api.simplelogin.io/api
+```
+
+Sem `SIMPLELOGIN_API_KEY`, ou se sua conta do SimpleLogin recusar a criação do alias, o projeto faz fallback para `example.*`.
+
+Se você quiser desligar SimpleLogin explicitamente:
+
+```bash
+synthetic-profile-generator generate --c BR --s SP --ci Campinas --g male --no-sl
 ```
 
 ## Flags da CLI
@@ -84,37 +115,57 @@ synthetic-profile-generator generate-batch --count 10 --c US
 ### `generate`
 
 - `--c` país
+- `--s` estado/região do país escolhido
+- `--ci` cidade da subdivisão escolhida
 - `--g` gênero
 - `--a` idade exata
-- `-q` quantidade de caracteres da senha
+- `--sl` ou `--no-sl` para usar SimpleLogin ou fallback local
 - `--f` formato: `pretty` ou `compact`
 
 ### `generate-batch`
 
-- `--count` quantidade
+- `--n` quantidade
 - `--c` país
+- `--s` estado/região aplicada ao lote
+- `--ci` cidade aplicada ao lote
 - `--g` gênero
 - `--a` idade exata aplicada ao lote
-- `-q` quantidade de caracteres da senha
+- `--sl` ou `--no-sl` para usar SimpleLogin ou fallback local
 - `--f` formato: `pretty` ou `compact`
 
 ### `countries`
 
-- sem flags
+- `--f` formato: `pretty` ou `compact`
+
+### `states`
+
+- `--c` país
+- `--f` formato: `pretty` ou `compact`
+
+### `cities`
+
+- `--c` país
+- `--s` subdivisão
+- `--f` formato: `pretty` ou `compact`
+
+O comando retorna todas as subdivisões suportadas para o país:
+
+- `BR`: 27 unidades federativas
+- `US`: 50 estados, `DC` e territórios suportados
 
 ## Padrões da CLI
 
 - identificador sintético vem ligado por padrão
+- SimpleLogin é tentado por padrão
+- aliases reais via SimpleLogin exigem `SIMPLELOGIN_API_KEY` no `.env`
 - `pretty` é o formato padrão
-- SimpleLogin é usado por padrão
 - se SimpleLogin falhar, o fallback aparece de forma explícita
-- `json` e `csv` não fazem parte da CLI atual
+- todas as saídas da CLI seguem o mesmo padrão textual
 
 ## Países suportados
 
 - `BR`
 - `US`
-- `FR`
 
 Cada país incluído atualmente possui:
 
@@ -125,6 +176,7 @@ Cada país incluído atualmente possui:
 ## O que ele faz
 
 - gera nome sintético por país
+- permite escolher estado/região compatível com o país
 - gera gênero `male` ou `female`
 - gera idade aleatória ou fixa
 - gera pai e mãe com pelo menos 20 anos a mais
@@ -134,7 +186,6 @@ Cada país incluído atualmente possui:
 - gera identificador sintético por país:
   - `BR` -> `cpf`
   - `US` -> `ssn_like`
-  - `FR` -> `nir_like`
 
 ## Regras de segurança
 
@@ -156,6 +207,7 @@ Endpoints:
 
 - `GET /health`
 - `GET /countries`
+- `GET /countries/{country_code}/states`
 - `POST /generate-profile`
 - `POST /generate-batch`
 
@@ -164,14 +216,17 @@ Exemplo de body:
 ```json
 {
   "country_code": "BR",
+  "state": "SP",
   "gender": "male",
   "age_min": 21,
   "age_max": 45,
   "use_simplelogin": true,
-  "include_cpf": true,
+  "include_national_identifier": true,
   "seed": 10
 }
 ```
+
+Na API, opções avançadas como `include_national_identifier`, `seed`, `debug_output` e `response_mode` continuam disponíveis.
 
 ## Estrutura da saída
 
@@ -186,7 +241,10 @@ Exemplo de body:
   },
   "location": {
     "country": "Brasil",
-    "country_code": "BR"
+    "country_code": "BR",
+    "state": "São Paulo",
+    "state_code": "SP",
+    "state_type": "state"
   },
   "family": {
     "father": {
@@ -269,4 +327,6 @@ bash -n install.sh
 
 ## Observação
 
-O nome do campo `include_cpf` foi mantido na API por compatibilidade, mas ele já funciona como “incluir identificador nacional sintético do país atual”.
+O nome canônico do campo na API agora é `include_national_identifier`.
+
+`include_cpf` continua aceito por compatibilidade e mantém o mesmo comportamento.

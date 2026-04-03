@@ -8,14 +8,64 @@ from synthetic_profiles.models.schemas import BatchGenerationResponse, Synthetic
 class OutputFormatter:
     """Renderiza dados simplificados do perfil para JSON e saída de CLI."""
 
+    def _location_label(self, state_type: str | None) -> str:
+        if state_type == "region":
+            return "Região"
+        if state_type == "department":
+            return "Departamento"
+        if state_type == "territory":
+            return "Território"
+        if state_type == "district":
+            return "Distrito"
+        if state_type == "collectivity":
+            return "Coletividade"
+        return "Estado"
+
     def _identifier_label(self, identifier_type: str | None) -> str:
         if identifier_type == "cpf":
             return "CPF"
         if identifier_type == "ssn_like":
             return "SSN-like"
-        if identifier_type == "nir_like":
-            return "NIR-like"
         return "Identificador nacional"
+
+    def format_countries(self, countries: list[dict[str, object]]) -> dict[str, object]:
+        return {"countries": countries}
+
+    def format_subdivisions(
+        self,
+        subdivisions: list[dict[str, str]],
+        *,
+        country_code: str,
+        country_name: str,
+    ) -> dict[str, object]:
+        return {
+            "subdivisions": subdivisions,
+            "_cli": {
+                "country_code": country_code,
+                "country_name": country_name,
+            },
+        }
+
+    def format_cities(
+        self,
+        cities: list[dict[str, str | bool]],
+        *,
+        country_code: str,
+        country_name: str,
+        subdivision_code: str,
+        subdivision_name: str,
+        subdivision_type: str,
+    ) -> dict[str, object]:
+        return {
+            "cities": cities,
+            "_cli": {
+                "country_code": country_code,
+                "country_name": country_name,
+                "subdivision_code": subdivision_code,
+                "subdivision_name": subdivision_name,
+                "subdivision_type": subdivision_type,
+            },
+        }
 
     def format_profile(
         self,
@@ -90,6 +140,43 @@ class OutputFormatter:
         return json.dumps(data, indent=2 if pretty else None, ensure_ascii=False)
 
     def to_pretty_text(self, payload: dict[str, object], *, debug: bool = False) -> str:
+        if "countries" in payload:
+            lines = ["Países"]
+            for item in payload["countries"]:
+                subdivision_types = ", ".join(item.get("subdivision_types", []))
+                lines.append(
+                    f"  {item['country_name']} ({item['country_code']}) | "
+                    f"subdivisões: {item['subdivision_count']}"
+                    + (f" | tipos: {subdivision_types}" if subdivision_types else "")
+                )
+            return "\n".join(lines)
+
+        if "subdivisions" in payload:
+            cli_hints = payload.get("_cli", {})
+            lines = [
+                "Subdivisões",
+                f"  País: {cli_hints.get('country_name')} ({cli_hints.get('country_code')})",
+            ]
+            for item in payload["subdivisions"]:
+                lines.append(
+                    f"  {self._location_label(item.get('type'))}: {item['name']} ({item['code']})"
+                )
+            return "\n".join(lines)
+
+        if "cities" in payload:
+            cli_hints = payload.get("_cli", {})
+            lines = [
+                "Cidades",
+                f"  País: {cli_hints.get('country_name')} ({cli_hints.get('country_code')})",
+                f"  {self._location_label(cli_hints.get('subdivision_type'))}: "
+                f"{cli_hints.get('subdivision_name')} ({cli_hints.get('subdivision_code')})",
+            ]
+            for item in payload["cities"]:
+                lines.append(
+                    f"  Cidade: {item['name']}" + (" | capital" if item.get("is_capital") else "")
+                )
+            return "\n".join(lines)
+
         if "profiles" in payload:
             chunks = []
             for index, profile in enumerate(payload["profiles"], start=1):
@@ -116,6 +203,15 @@ class OutputFormatter:
             "",
             "Localização",
             f"  País: {location['country']} ({location['country_code']})",
+            *(
+                [
+                    f"  {self._location_label(location.get('state_type'))}: "
+                    f"{location['state']} ({location['state_code']})"
+                ]
+                if location.get("state")
+                else []
+            ),
+            *([f"  Cidade: {location['city']}"] if location.get("city") else []),
             "",
             "Família",
             f"  Pai: {family['father']['full_name']} | {family['father']['gender']} | {family['father']['age']}"
@@ -156,6 +252,27 @@ class OutputFormatter:
         return "\n".join(lines)
 
     def to_compact_text(self, payload: dict[str, object], *, debug: bool = False) -> str:
+        if "countries" in payload:
+            return "\n".join(
+                (
+                    f"{item['country_code']} | {item['country_name']} | "
+                    f"{item['subdivision_count']} | {', '.join(item.get('subdivision_types', []))}"
+                )
+                for item in payload["countries"]
+            )
+
+        if "subdivisions" in payload:
+            return "\n".join(
+                f"{item['code']} | {item['name']} | {item['type']}"
+                for item in payload["subdivisions"]
+            )
+
+        if "cities" in payload:
+            return "\n".join(
+                f"{item['name']} | capital={item['is_capital']}"
+                for item in payload["cities"]
+            )
+
         if "profiles" in payload:
             return "\n\n".join(self.to_compact_text(profile, debug=debug) for profile in payload["profiles"])
         identity = payload["identity"]
@@ -165,6 +282,14 @@ class OutputFormatter:
         lines = [
             f"{identity['full_name']} | {identity['gender']} | {identity['age']}",
             f"{location['country']} ({location['country_code']})",
+            *(
+                [
+                    f"{self._location_label(location.get('state_type'))}: "
+                    f"{location['state']} ({location['state_code']})"
+                ]
+                if location.get("state")
+                else []
+            ),
             f"E-mail: {credentials['email'] or 'não gerado'}",
             f"Senha: {credentials['password'] or 'não gerada'}",
         ]
